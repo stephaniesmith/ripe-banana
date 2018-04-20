@@ -50,6 +50,12 @@ describe('Actor API', () => {
             });
 
     });
+    it('gets an actor by id', () => {
+        return request.get(`/actors/${paul._id}`)
+            .then(({ body }) => {
+                assert.deepEqual(body, paul); 
+            });
+    });
 
 });
 
