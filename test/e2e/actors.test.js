@@ -18,6 +18,8 @@ describe('Actor API', () => {
         pob: 'Shaker Heights, OH, USA'
     };
 
+    const roundTrip = doc => JSON.parse(JSON.stringify(doc.toJSON()));
+
     it('saves an actor', () => {
         return request.post('/actors')
             .send(emma)
@@ -32,6 +34,20 @@ describe('Actor API', () => {
                 });
                 emma = body;
             });
+    });
+
+
+    it('get all actors', () => {
+        return Actor.create(paul).then(roundTrip)
+            .then(saved => {
+                paul = saved;
+                return request.get('/actors');
+
+            })
+            .then(({ body }) => {
+                assert.deepEqual(body, [emma, paul]);
+            });
+
     });
 });
 
