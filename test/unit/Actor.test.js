@@ -7,7 +7,7 @@ describe('Actor model', () => {
     it('valid good model', () => {
         const data = {
             name: 'Paul Newman',
-            dob: new Date(1925, 1, 26),
+            dob: new Date(1925, 0, 26),
             pob: 'Shaker Heights, OH'
         };
         const actor = new Actor(data);
