@@ -19,6 +19,7 @@ describe('Actor API', () => {
     };
 
     const roundTrip = doc => JSON.parse(JSON.stringify(doc.toJSON()));
+    const getFields = ({ _id, name }) => ({ _id, name });
 
     it('saves an actor', () => {
         return request.post('/actors')
@@ -45,9 +46,10 @@ describe('Actor API', () => {
 
             })
             .then(({ body }) => {
-                assert.deepEqual(body, [emma, paul]);
+                assert.deepEqual(body, [emma, paul].map(getFields));
             });
 
     });
+
 });
 
