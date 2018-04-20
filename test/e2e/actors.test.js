@@ -75,6 +75,13 @@ describe('Actor API', () => {
                 assert.isNull(found);
             });
     });
+    it('returns 404', () => {
+        return request.get(`/actors/${emma._id}`)
+            .then(response => {
+                assert.equal(response.status, 404);
+            });
+
+    });
 
 });
 
