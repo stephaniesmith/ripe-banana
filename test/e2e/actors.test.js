@@ -66,6 +66,15 @@ describe('Actor API', () => {
             });
 
     });
+    it('deletes an actor', () => {
+        return request.delete(`/actors/${emma._id}`)
+            .then(() => {
+                return Actor.findById(emma._id);
+            })
+            .then(found => {
+                assert.isNull(found);
+            });
+    });
 
 });
 
