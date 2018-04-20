@@ -56,6 +56,16 @@ describe('Actor API', () => {
                 assert.deepEqual(body, paul); 
             });
     });
+    it('updates an actor', () => {
+        emma.pob = 'Paddington, London, England';
+
+        return request.put(`/actors/${emma._id}`)
+            .send(emma)
+            .then(({ body }) => {
+                assert.deepEqual(body, emma);
+            });
+
+    });
 
 });
 
