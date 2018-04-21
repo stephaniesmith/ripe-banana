@@ -4,7 +4,7 @@ const { getErrors } = require('./helpers');
 
 describe('Film model', () => {
 
-    it('valid good model', () => {
+    it.only('valid good model', () => {
 
         const data = {
             title: 'The Incredibles',
@@ -17,15 +17,15 @@ describe('Film model', () => {
         data._id = film._id;
         assert.deepEqual(film.toJSON(), data);
 
-        assert.isUndefinded(film.validateSync());
+        assert.isUndefined(film.validateSync());
     });
 
-    it('required fields', () => {
+    it.only('required fields', () => {
         const film = new Film({});
         const errors = getErrors(film.validateSync(), 3);
         assert.equal(errors.title.kind, 'required');
         assert.equal(errors.studio.kind, 'required');
         assert.equal(errors.released.kind, 'required');
-    })
+    });
 
 });
