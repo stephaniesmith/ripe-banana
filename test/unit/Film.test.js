@@ -10,7 +10,10 @@ describe('Film model', () => {
             title: 'The Incredibles',
             studio: 1234546,
             released: 2004,
-            cast: []
+            cast: [{
+                part: 'Violet Parr',
+                actor: 'Sarah Vowell'
+            }]
         };
 
         const film = new Film(data);
