@@ -15,7 +15,8 @@ describe('Studio API', () => {
             country: 'USA'
         },
     };
-
+    //const roundTrip = doc => JSON.parse(JSON.stringify(doc.toJSON()));
+    //const getFields = ({ _id, name }) => ({_id, name }); 
 
     it('saves a studio', () => {
         return request.post('/studios')
@@ -33,8 +34,10 @@ describe('Studio API', () => {
                 paramount = body; 
             });
     });
-    
-
-
-
+    it('returns 404', () => {
+        return request.get(`/studio/${paramount._id}`)
+            .then(response => {
+                assert.equal(response.status, 404);
+            });
+    });
 });
