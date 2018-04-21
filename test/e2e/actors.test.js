@@ -25,7 +25,8 @@ describe('Actor API', () => {
         return request.post('/actors')
             .send(emma)
             .then(({ body }) => {
-                const { _id, __v } = body;
+                const { _id, __v
+                } = body;
                 assert.ok(_id);
                 assert.equal(__v, 0);
                 assert.deepEqual(body, {
