@@ -75,4 +75,11 @@ describe('films API', () => {
             });
     });
 
+    it.only('get film by id', () => {
+        return request.get(`/films/${sense._id}`)
+            .then(({ body }) => {
+
+            });
+    });
+
 });
