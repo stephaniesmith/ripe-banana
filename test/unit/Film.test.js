@@ -12,7 +12,6 @@ describe('Film model', () => {
             released: 2004,
             cast: [{
                 part: 'Violet Parr',
-                actor: 543221
             }]
         };
 
