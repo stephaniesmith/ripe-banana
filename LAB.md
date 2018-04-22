@@ -3,7 +3,7 @@ Ripe Banana
 
 ## Description
 
-For this assignment, you'l be creating a database of movie films (with reviews), movie studios, actors, reviews and reviewers.
+For this assignment, you'll be creating a database of movie films (with reviews), movie studios, actors, reviews and reviewers.
 
 **Work in groups of 2-3 on this lab**
 

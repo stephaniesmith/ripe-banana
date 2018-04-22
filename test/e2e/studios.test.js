@@ -1,7 +1,7 @@
 const { assert } = require('chai');
 const request = require('./request');
 const { dropCollection } = require('./db');
-//const Studio = require('../../lib/models/Studio');
+const Studio = require('../../lib/models/Studio');
 
 
 describe('Studio API', () => {
@@ -15,24 +15,44 @@ describe('Studio API', () => {
             country: 'USA'
         },
     };
-    //const roundTrip = doc => JSON.parse(JSON.stringify(doc.toJSON()));
-    //const getFields = ({ _id, name }) => ({_id, name }); 
+
+    /*let pixar = {
+        name: 'Pixar',
+        address: {
+            city: 'Emeryville',
+            state: 'California',
+            country: 'USA'
+        },
+    };*/
+
+    const roundTrip = doc => JSON.parse(JSON.stringify(doc.toJSON()));
+    //const getFields = ({ _id, name }) => ({ _id, name }); 
 
     it('saves a studio', () => {
         return request.post('/studios')
             .send(paramount)
             .then(({ body }) => {
-                const { _id, _v
+                const { _id
                 } = body;
                 assert.ok(_id);
-                assert.equal(_v, 0);
+                assert.equal();
                 assert.deepEqual(body, {
                     ...paramount,
-                    _id,
-                    _v
+                    _id
                 });
                 paramount = body; 
             });
+    });
+
+    it('gets all studios', () => {
+        return Studio.create(paramount).then(roundTrip)
+            .then(saved => {
+                paramount = saved;
+                return request.get('/studios');
+            });
+        /*.then(({ body }) => {
+                assert.deepEqual(body, [paramount, pixar].map(getFields));
+            });*/
     });
 
     it('returns 404', () => {
