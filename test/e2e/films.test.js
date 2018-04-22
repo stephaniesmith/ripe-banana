@@ -69,7 +69,7 @@ describe('films API', () => {
     };
 
     it.only('gets all films', () => {
-        return request.get('films')
+        return request.get('/films')
             .then(({ body }) => {
                 assert.deepEqual(body, [incredibles, sense].map(getFields));
             });
