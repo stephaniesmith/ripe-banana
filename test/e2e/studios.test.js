@@ -16,29 +16,30 @@ describe('Studio API', () => {
         },
     };
 
-    /*let pixar = {
+    let pixar = {
         name: 'Pixar',
         address: {
             city: 'Emeryville',
             state: 'California',
             country: 'USA'
         },
-    };*/
+    };
 
     const roundTrip = doc => JSON.parse(JSON.stringify(doc.toJSON()));
-    //const getFields = ({ _id, name }) => ({ _id, name }); 
+    const getFields = ({ _id, name }) => ({ _id, name }); 
 
     it('saves a studio', () => {
         return request.post('/studios')
             .send(paramount)
             .then(({ body }) => {
-                const { _id
+                const { _id, _v
                 } = body;
                 assert.ok(_id);
-                assert.equal();
+                assert.deepEqual(_v);
                 assert.deepEqual(body, {
                     ...paramount,
-                    _id
+                    _id,
+                    _v
                 });
                 paramount = body; 
             });
@@ -48,11 +49,17 @@ describe('Studio API', () => {
         return Studio.create(paramount).then(roundTrip)
             .then(saved => {
                 paramount = saved;
-                return request.get('/studios');
-            });
-        /*.then(({ body }) => {
+                return request.get('/studios/');
+            })
+            .then(({ body }) => {
                 assert.deepEqual(body, [paramount, pixar].map(getFields));
-            });*/
+            });
+    });
+    it('gets particular studio by id', () => { return request.get(`/studios/${paramount._id}`)
+        .then(({ body }) => {
+            assert.deepEqual(body, paramount);
+        });
+
     });
 
     it('returns 404', () => {
