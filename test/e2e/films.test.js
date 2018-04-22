@@ -35,15 +35,18 @@ describe('films API', () => {
             .send(sense)
             .then(({ body }) => {
                 const { _id, __v } = body;
+                sense.cast[0]._id = body.cast[0]._id;
                 assert.ok(_id);
                 assert.equal(__v, 0);
                 assert.deepEqual(body, {
                     ...sense,
                     _id,
-                    __v
+                    __v,
                 });
                 sense = body;
             });
     });
+
+    
 
 });
