@@ -62,10 +62,16 @@ describe('films API', () => {
             });
     });
 
+    const getFields = ({ _id, title, studio, released }) => {
+        return { 
+            _id, title, studio, released
+        };
+    };
+
     it.only('gets all films', () => {
         return request.get('films')
             .then(({ body }) => {
-
+                assert.deepEqual(body, [incredibles, sense].map(getFields));
             });
     });
 
