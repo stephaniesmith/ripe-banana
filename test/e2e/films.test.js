@@ -30,14 +30,19 @@ describe('films API', () => {
     });
 
     it.only('saves a film', () => {
-        sense.cast = [{ part: 'Elinor Dashwoor', actor: emma._id }];
-        console.log('S&S!!', sense);
-        return new Film(sense).save()
-            .then(saved => {
-                saved = saved.toJSON();
-                const { _id } = saved;
-                // console.log(saved);
+        sense.cast = [{ part: 'Elinor Dashwood', actor: emma._id }];
+        return request.post('/films')
+            .send(sense)
+            .then(({ body }) => {
+                const { _id, __v } = body;
                 assert.ok(_id);
+                assert.equal(__v, 0);
+                assert.deepEqual(body, {
+                    ...sense,
+                    _id,
+                    __v
+                });
+                sense = body;
             });
     });
 
