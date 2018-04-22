@@ -12,12 +12,13 @@ describe('Film model', () => {
             released: 2004,
             cast: [{
                 part: 'Violet Parr',
-                actor: 'Sarah Vowell'
+                actor: 543221
             }]
         };
 
         const film = new Film(data);
         data._id = film._id;
+        data.cast[0]._id = film.cast[0]._id;
         assert.deepEqual(film.toJSON(), data);
 
         assert.isUndefined(film.validateSync());
