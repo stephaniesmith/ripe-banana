@@ -1,7 +1,7 @@
 const { assert } = require('chai');
 const request = require('./request');
 const { dropCollection } = require('./db');
-const Film = require('../../lib/models/Film');
+// const Film = require('../../lib/models/Film');
 
 describe('films API', () => {
 
@@ -18,6 +18,13 @@ describe('films API', () => {
         cast: []
     };
 
+    let incredibles = {
+        title: 'The Incredibles',
+        studio: 3940382,
+        released: 2004,
+        cast: []
+    };
+
     before(() => dropCollection('actors'));
     before(() => dropCollection('films'));
 
@@ -26,6 +33,14 @@ describe('films API', () => {
             .send(emma)
             .then(({ body }) => {
                 emma = body;
+            });
+    });
+
+    before(() => {
+        return request.post('/films')
+            .send(incredibles)
+            .then(({ body }) => {
+                incredibles = body;
             });
     });
 
@@ -47,6 +62,11 @@ describe('films API', () => {
             });
     });
 
-    
+    it.only('gets all films', () => {
+        return request.get('films')
+            .then(({ body }) => {
+
+            });
+    });
 
 });
