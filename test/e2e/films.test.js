@@ -62,7 +62,7 @@ describe('films API', () => {
             });
     });
 
-    const getFields = ({ _id, title, studio, released }) => {
+    const getAllFields = ({ _id, title, studio, released }) => {
         return { 
             _id, title, studio, released
         };
@@ -71,14 +71,31 @@ describe('films API', () => {
     it.only('gets all films', () => {
         return request.get('/films')
             .then(({ body }) => {
-                assert.deepEqual(body, [incredibles, sense].map(getFields));
+                assert.deepEqual(body, [incredibles, sense].map(getAllFields));
             });
     });
 
-    it.only('get film by id', () => {
+    const getOneField = ({ title, studio, released }) => {
+        return { 
+            title, studio, released, cast: [{ _id: sense.cast[0]._id, part: sense.cast[0].part, actor: { _id: emma._id, name: emma.name } }]
+        };
+    };
+
+    it('get film by id', () => {
         return request.get(`/films/${sense._id}`)
             .then(({ body }) => {
+                console.log('CAST!!', body.cast);
+                assert.deepEqual(body, getOneField(sense));
+            });
+    });
 
+    it.only('deletes film by id', () => {
+        return request.delete(`/films/${incredibles._id}`)
+            .then(() => {
+                return request.get(`/films/${incredibles._id}`);
+            })
+            .then(res => {
+                assert.equal(res.status, 404);
             });
     });
 
