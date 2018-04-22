@@ -34,8 +34,9 @@ describe('Studio API', () => {
                 paramount = body; 
             });
     });
+
     it('returns 404', () => {
-        return request.get(`/studio/${paramount._id}`)
+        return request.get(`/studios/${paramount._id}`)
             .then(response => {
                 assert.equal(response.status, 404);
             });
