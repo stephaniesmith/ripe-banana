@@ -18,11 +18,6 @@ describe('films API', () => {
         cast: []
     };
 
-    let elinor = { 
-        part: 'Elinor Dashwood',
-        actor: emma._id 
-    };
-
     before(() => dropCollection('actors'));
     before(() => dropCollection('films'));
 
@@ -35,6 +30,7 @@ describe('films API', () => {
     });
 
     it.only('saves a film', () => {
+        sense.cast = [{ part: 'Elinor Dashwoor', actor: emma._id }];
         console.log('S&S!!', sense);
         return new Film(sense).save()
             .then(saved => {
