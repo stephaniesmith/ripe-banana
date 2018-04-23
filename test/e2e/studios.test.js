@@ -23,6 +23,7 @@ describe('Studio API', () => {
     };
 
     before(() => dropCollection('studios'));
+    before(() => dropCollection('films'));
     
     it('saves a studio', () => {
         return request.post('/studios')
@@ -54,10 +55,28 @@ describe('Studio API', () => {
             });
     });
 
-    it('gets particular studio by id', () => { 
-        return request.get(`/studios/${paramount._id}`)
+    it('gets particular studio by id', () => {
+        let up = {
+            title: 'UP',
+            studio: pixar._id,
+            released: 2009,
+            cast: []
+        };
+        
+        return request.post('/films')
+            .send(up)
             .then(({ body }) => {
-                assert.deepEqual(body, paramount);
+                up = body;
+                return request.get(`/studios/${pixar._id}`);
+            })
+            .then(({ body }) => {
+                assert.deepEqual(body, {
+                    ...pixar,
+                    films: [{
+                        _id: up._id,
+                        title: up.title
+                    }]
+                });
             });
     });
 
