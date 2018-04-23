@@ -23,6 +23,6 @@ describe('Studio model', () => {
     it('required fields', () => {
         const studio = new Studio({});
         const errors = getErrors(studio.validateSync(), 1);
-        assert.Equal(errors.name.kind, 'required');
+        assert.equal(errors.name.kind, 'required');
     });
 });
