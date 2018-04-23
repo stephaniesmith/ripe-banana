@@ -44,7 +44,7 @@ describe('films API', () => {
             });
     });
 
-    it.only('saves a film', () => {
+    it('saves a film', () => {
         sense.cast = [{ part: 'Elinor Dashwood', actor: emma._id }];
         return request.post('/films')
             .send(sense)
@@ -68,28 +68,29 @@ describe('films API', () => {
         };
     };
 
-    it.only('gets all films', () => {
+    it('gets all films', () => {
         return request.get('/films')
             .then(({ body }) => {
                 assert.deepEqual(body, [incredibles, sense].map(getAllFields));
             });
     });
 
-    const getOneField = ({ title, studio, released }) => {
+    const getOneField = ({ _id, title, studio, released, cast }) => {
         return { 
-            title, studio, released, cast: [{ _id: sense.cast[0]._id, part: sense.cast[0].part, actor: { _id: emma._id, name: emma.name } }]
+            _id, title, studio, released, cast
         };
     };
 
-    it.only('get film by id', () => {
+    it('get film by id', () => {
+        sense.cast[0].actor = { _id: emma._id, name: emma.name };
         return request.get(`/films/${sense._id}`)
             .then(({ body }) => {
-                console.log('CAST!!', body.cast);
-                assert.deepEqual(body, getOneField(sense));
+                const selected = getOneField(sense);
+                assert.deepEqual(body, selected);
             });
     });
 
-    it.only('deletes film by id', () => {
+    it('deletes film by id', () => {
         return request.delete(`/films/${incredibles._id}`)
             .then(() => {
                 return request.get(`/films/${incredibles._id}`);
