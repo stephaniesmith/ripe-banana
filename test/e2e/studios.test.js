@@ -89,4 +89,12 @@ describe('Studio API', () => {
                 assert.equal(res.status, 404);
             });
     });
+
+    it('will not delete a studio with films', () => {
+        return request.delete(`/studios/${pixar._id}`)
+            .then(response => {
+                assert.strictEqual(response.status, 400);
+                assert.include(response.body.error,  'cannot');
+            });
+    });
 });
