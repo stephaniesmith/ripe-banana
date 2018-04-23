@@ -14,4 +14,11 @@ describe('Reviewer model', () => {
         assert.deepEqual(reviewer.toJSON(), info);
         assert.isUndefined(reviewer.validateSync());
     });
+
+    it('has required fields', () => {
+        const reviewer = new Reviewer({});
+        const errors = getErrors(reviewer.validateSync(), 2);
+        assert.strictEqual(errors.name.kind, 'required');
+        assert.strictEqual(errors.company.kind, 'required');
+    });
 });
