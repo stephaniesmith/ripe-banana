@@ -4,6 +4,23 @@ const { dropCollection } = require('./db');
 
 describe('Reviewer API', () => {
     before(() => dropCollection('reviewers'));
+    before(() => dropCollection('reviews'));
+    before(() => dropCollection('films'));
+    
+    let coolHandLuke = {
+        title: 'Cool Hand Luke',
+        studio: 'Warner Bros.-Seven Arts',
+        released: 1967,
+        cast: []
+    };
+
+    before(() => {
+        return request.post('/films')
+            .send(coolHandLuke)
+            .then(({ body }) => {
+                coolHandLuke = body;
+            });
+    });
 
     let siskel = {
         name: 'Gene Siskel',
@@ -49,6 +66,37 @@ describe('Reviewer API', () => {
                 assert.deepEqual(body, [siskel, ebert]);
             });
     });
+
+    it('gets a reviewer by id, including an array of their reviews', () => {
+        let lukeReview = {
+            rating: 5,
+            review: 'It is a great film. On that most of us can agree.',
+            reviewer: ebert._id,
+            film: coolHandLuke._id
+        };
+    
+        return request.post('/reviews')
+            .send(lukeReview)
+            .then(({ body }) => {
+                lukeReview = body;
+                return request.get(`/reviewers/${ebert._id}`);
+            })
+            .then(({ body }) => {
+                assert.deepEqual(body, {
+                    ...ebert,
+                    reviews: [{ 
+                        _id: lukeReview._id,
+                        rating: lukeReview.rating,
+                        review: lukeReview.review, 
+                        film: {
+                            _id: coolHandLuke._id,
+                            title: coolHandLuke.title 
+                        }
+                    }]
+                });
+            });
+    });
+
     
     it('updates a reviewer', () => {
         siskel.company = 'Chicago Tribune';
