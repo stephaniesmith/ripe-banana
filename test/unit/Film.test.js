@@ -17,7 +17,7 @@ describe('Film model', () => {
     const actor = new Actor(sarah);
     const studio = new Studio(pixar);
 
-    it.only('valid good model', () => {
+    it('valid good model', () => {
 
         const data = {
             title: 'The Incredibles',
@@ -33,7 +33,7 @@ describe('Film model', () => {
         assert.isUndefined(film.validateSync());
     });
 
-    it.only('required fields', () => {
+    it('required fields', () => {
         const film = new Film({});
         const errors = getErrors(film.validateSync(), 3);
         assert.equal(errors.title.kind, 'required');
@@ -41,7 +41,7 @@ describe('Film model', () => {
         assert.equal(errors.released.kind, 'required');
     });
 
-    it.only('checks actor id', () => {
+    it('checks actor id', () => {
 
         const data = {
             title: 'The Incredibles',
