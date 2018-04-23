@@ -109,7 +109,7 @@ describe('films API', () => {
         };
     };
 
-    it('get film by id', () => {
+    it.only('get film by id', () => {
         sense.cast[0].actor = { _id: emma._id, name: emma.name };
         return request.get(`/films/${sense._id}`)
             .then(({ body }) => {
