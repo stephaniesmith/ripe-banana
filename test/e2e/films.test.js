@@ -115,7 +115,7 @@ describe('films API', () => {
     });
 
 
-    it.only('saves a film', () => {
+    it('saves a film', () => {
         sense.cast = [{ part: 'Elinor Dashwood', actor: emma._id }];
         sense.studio = columbia._id;
         return request.post('/films')
@@ -140,7 +140,7 @@ describe('films API', () => {
         };
     };
 
-    it.only('gets all films', () => {
+    it('gets all films', () => {
         sense.studio = { _id: columbia._id, name: columbia.name };
         incredibles.studio = { _id: pixar._id, name: pixar.name };
         return request.get('/films')
@@ -155,7 +155,7 @@ describe('films API', () => {
         };
     };
 
-    it.only('get film by id', () => {
+    it('get film by id', () => {
         sense.cast[0].actor = { _id: emma._id, name: emma.name };
         return request.get(`/films/${sense._id}`)
             .then(({ body }) => {
@@ -164,7 +164,7 @@ describe('films API', () => {
             });
     });
 
-    it.only('checks review populate on get film by id', () => {
+    it('checks review populate on get film by id', () => {
         const incrdReview = [
             { 
                 _id: goodReview._id, 
@@ -182,13 +182,11 @@ describe('films API', () => {
 
         return request.get(`/films/${incredibles._id}`)
             .then(({ body }) => {
-                console.log('REVIEW!!!', incrdReview);
-                console.log('BODY!!!', body.reviews);
                 assert.deepEqual(body.reviews, incrdReview);
             });       
     });
 
-    it.only('deletes film by id', () => {
+    it('deletes film by id', () => {
         return request.delete(`/films/${incredibles._id}`)
             .then(() => {
                 return request.get(`/films/${incredibles._id}`);
