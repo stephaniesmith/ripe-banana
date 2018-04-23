@@ -52,23 +52,7 @@ describe('Actor API', () => {
             });
 
     });
-    it('gets an actor by id', () => {
-        return request.get(`/actors/${paul._id}`)
-            .then(({ body }) => {
-                assert.deepEqual(body, paul); 
-            });
-    });
-    it('updates an actor', () => {
-        emma.pob = 'Paddington, London, England';
-
-        return request.put(`/actors/${emma._id}`)
-            .send(emma)
-            .then(({ body }) => {
-                assert.deepEqual(body, emma);
-            });
-
-    });
-    it('will not delete an actor in a film', () => {
+    it('gets an actor by id and their films', () => {
         let sense = {
             title: 'Sense and Sensibility',
             studio: Types.ObjectId(),
@@ -82,8 +66,33 @@ describe('Actor API', () => {
             .send(sense)
             .then(({ body }) => {
                 sense = body;
-                return request.delete(`/actors/${emma._id}`);
+                return request.get(`/actors/${emma._id}`);
             })
+            .then(({ body }) => {
+                assert.deepEqual(body, { 
+                    ...emma,
+                    films: [{
+                        _id: sense._id,
+                        title: sense.title,
+                        released: sense.released
+                    }] 
+          
+                }); 
+            });
+    });
+    it('updates an actor', () => {
+        emma.pob = 'Paddington, London, England';
+
+        return request.put(`/actors/${emma._id}`)
+            .send(emma)
+            .then(({ body }) => {
+                assert.deepEqual(body, emma);
+            });
+
+    });
+    it('will not delete an actor in a film', () => {
+        
+        return request.delete(`/actors/${emma._id}`)
     
             .then(response => {
                 assert.strictEqual(response.status, 400);
