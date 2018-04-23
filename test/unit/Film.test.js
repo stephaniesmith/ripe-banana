@@ -1,6 +1,7 @@
 const { assert } = require('chai');
 const Film = require('../../lib/models/Film');
 const Actor = require('../../lib/models/Actor');
+const Studio = require('../../lib/models/Studio');
 const { getErrors } = require('./helpers');
 
 describe('Film model', () => {
@@ -9,13 +10,18 @@ describe('Film model', () => {
         name: 'Sarah Vowell'
     };
 
-    const actor = new Actor(sarah);
+    const pixar = {
+        name: 'Pixar'
+    };
 
-    it('valid good model', () => {
+    const actor = new Actor(sarah);
+    const studio = new Studio(pixar);
+
+    it.only('valid good model', () => {
 
         const data = {
             title: 'The Incredibles',
-            studio: 1234546,
+            studio: studio._id,
             released: 2004,
             cast: []
         };
@@ -27,7 +33,7 @@ describe('Film model', () => {
         assert.isUndefined(film.validateSync());
     });
 
-    it('required fields', () => {
+    it.only('required fields', () => {
         const film = new Film({});
         const errors = getErrors(film.validateSync(), 3);
         assert.equal(errors.title.kind, 'required');
@@ -35,11 +41,11 @@ describe('Film model', () => {
         assert.equal(errors.released.kind, 'required');
     });
 
-    it('checks actor id', () => {
+    it.only('checks actor id', () => {
 
         const data = {
             title: 'The Incredibles',
-            studio: 1234546,
+            studio: studio._id,
             released: 2004,
             cast: [{
                 part: 'Violet Parr',
