@@ -3,7 +3,7 @@ const request = require('./request');
 const { dropCollection } = require('./db');
 
 describe('Reviewer API', () => {
-    before(() => dropCollection('reviwers'));
+    before(() => dropCollection('reviewers'));
 
     let siskel = {
         name: 'Gene Siskel',
@@ -34,6 +34,19 @@ describe('Reviewer API', () => {
                     __v
                 });
                 siskel = body;
+            });
+    });
+
+    it('gets all reviewers', () => {
+        return request.post('/reviewers')
+            .send(ebert)
+            .then(checkOk)
+            .then(({ body }) => {
+                ebert = body;
+                return request.get('/reviewers');
+            })
+            .then(({ body }) => {
+                assert.deepEqual(body, [siskel, ebert]);
             });
     });
 });
