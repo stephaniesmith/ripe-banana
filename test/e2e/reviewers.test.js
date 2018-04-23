@@ -49,4 +49,15 @@ describe('Reviewer API', () => {
                 assert.deepEqual(body, [siskel, ebert]);
             });
     });
+    
+    it('updates a reviewer', () => {
+        siskel.company = 'Chicago Tribune';
+
+        return request.put(`/reviewers/${siskel._id}`)
+            .send(siskel)
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, siskel);
+            });
+    });
 });
