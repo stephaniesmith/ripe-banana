@@ -44,7 +44,7 @@ describe('films API', () => {
             });
     });
 
-    it('saves a film', () => {
+    it.only('saves a film', () => {
         sense.cast = [{ part: 'Elinor Dashwood', actor: emma._id }];
         return request.post('/films')
             .send(sense)
@@ -68,7 +68,7 @@ describe('films API', () => {
         };
     };
 
-    it('gets all films', () => {
+    it.only('gets all films', () => {
         return request.get('/films')
             .then(({ body }) => {
                 assert.deepEqual(body, [incredibles, sense].map(getAllFields));
@@ -81,7 +81,7 @@ describe('films API', () => {
         };
     };
 
-    it('get film by id', () => {
+    it.only('get film by id', () => {
         return request.get(`/films/${sense._id}`)
             .then(({ body }) => {
                 console.log('CAST!!', body.cast);
@@ -89,7 +89,7 @@ describe('films API', () => {
             });
     });
 
-    it('deletes film by id', () => {
+    it.only('deletes film by id', () => {
         return request.delete(`/films/${incredibles._id}`)
             .then(() => {
                 return request.get(`/films/${incredibles._id}`);
