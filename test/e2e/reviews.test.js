@@ -64,4 +64,21 @@ describe('Review API', () => {
                 lukeReview = body;
             });
     });
+
+    const getFields = ({ _id, rating, review, film }) => ({ _id, rating, review, film });
+
+    it('gets (100 most recent) reviews, including film title', () => {
+        return request.get('/reviews')
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, [{
+                    ...lukeReview,
+                    film: {
+                        _id: coolHandLuke._id,
+                        title: coolHandLuke.title
+                    }
+                }].map(getFields));
+            });
+
+    });
 });
