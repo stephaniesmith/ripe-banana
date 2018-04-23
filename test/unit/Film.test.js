@@ -1,6 +1,7 @@
 const { assert } = require('chai');
 const Film = require('../../lib/models/Film');
 const Actor = require('../../lib/models/Actor');
+const Studio = require('../../lib/models/Studio');
 const { getErrors } = require('./helpers');
 
 describe('Film model', () => {
@@ -9,13 +10,18 @@ describe('Film model', () => {
         name: 'Sarah Vowell'
     };
 
+    const pixar = {
+        name: 'Pixar'
+    };
+
     const actor = new Actor(sarah);
+    const studio = new Studio(pixar);
 
     it('valid good model', () => {
 
         const data = {
             title: 'The Incredibles',
-            studio: 1234546,
+            studio: studio._id,
             released: 2004,
             cast: []
         };
@@ -39,7 +45,7 @@ describe('Film model', () => {
 
         const data = {
             title: 'The Incredibles',
-            studio: 1234546,
+            studio: studio._id,
             released: 2004,
             cast: [{
                 part: 'Violet Parr',

@@ -22,7 +22,6 @@ describe('Review API', () => {
 
     let coolHandLuke = {
         title: 'Cool Hand Luke',
-        studio: 'Warner Bros.-Seven Arts',
         released: 1967,
         cast: []
     };

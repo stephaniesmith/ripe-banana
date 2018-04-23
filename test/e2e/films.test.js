@@ -1,7 +1,6 @@
 const { assert } = require('chai');
 const request = require('./request');
 const { dropCollection } = require('./db');
-// const Film = require('../../lib/models/Film');
 
 describe('films API', () => {
 
@@ -13,17 +12,43 @@ describe('films API', () => {
 
     let sense = {
         title: 'Sense and Sensibility',
-        studio: 1234546,
         released: 1995,
         cast: []
     };
 
     let incredibles = {
         title: 'The Incredibles',
-        studio: 3940382,
         released: 2004,
         cast: []
     };
+
+    let pixar = {
+        name: 'Pixar'
+    };
+
+    let columbia = {
+        name: 'Columbia Pictures'
+    };
+
+    let critic = {
+        name: 'Steven',
+        company: 'steven.com'
+    };
+
+    let goodReview = {
+        rating: 5,
+        review: 'Really good!',
+        createdAt: new Date(),
+        updateAt: new Date()
+    };
+
+    let badReview = {
+        rating: 1,
+        review: 'Really bad!',
+        createdAt: new Date(),
+        updateAt: new Date()
+    };
+
 
     before(() => dropCollection('actors'));
     before(() => dropCollection('films'));
@@ -37,6 +62,23 @@ describe('films API', () => {
     });
 
     before(() => {
+        return request.post('/studios')
+            .send(pixar)
+            .then(({ body }) => {
+                pixar = body;
+            });
+    });
+
+    before(() => {
+        return request.post('/studios')
+            .send(columbia)
+            .then(({ body }) => {
+                columbia = body;
+            });
+    });
+
+    before(() => {
+        incredibles.studio = pixar._id;
         return request.post('/films')
             .send(incredibles)
             .then(({ body }) => {
@@ -44,8 +86,38 @@ describe('films API', () => {
             });
     });
 
+    before(() => {
+        return request.post('/reviewers')
+            .send(critic)
+            .then(({ body }) => {
+                critic = body;
+            });
+    });
+
+    before(() => {
+        goodReview.reviewer = critic._id;
+        goodReview.film = incredibles._id;
+        return request.post('/reviews')
+            .send(goodReview)
+            .then(({ body }) => {
+                goodReview = body;
+            });
+    });
+
+    before(() => {
+        badReview.reviewer = critic._id;
+        badReview.film = incredibles._id;
+        return request.post('/reviews')
+            .send(badReview)
+            .then(({ body }) => {
+                badReview = body;
+            });
+    });
+
+
     it('saves a film', () => {
         sense.cast = [{ part: 'Elinor Dashwood', actor: emma._id }];
+        sense.studio = columbia._id;
         return request.post('/films')
             .send(sense)
             .then(({ body }) => {
@@ -69,6 +141,8 @@ describe('films API', () => {
     };
 
     it('gets all films', () => {
+        sense.studio = { _id: columbia._id, name: columbia.name };
+        incredibles.studio = { _id: pixar._id, name: pixar.name };
         return request.get('/films')
             .then(({ body }) => {
                 assert.deepEqual(body, [incredibles, sense].map(getAllFields));
@@ -77,7 +151,7 @@ describe('films API', () => {
 
     const getOneField = ({ _id, title, studio, released, cast }) => {
         return { 
-            _id, title, studio, released, cast
+            _id, title, studio, released, cast, reviews: []
         };
     };
 
@@ -88,6 +162,28 @@ describe('films API', () => {
                 const selected = getOneField(sense);
                 assert.deepEqual(body, selected);
             });
+    });
+
+    it('checks review populate on get film by id', () => {
+        const incrdReview = [
+            { 
+                _id: goodReview._id, 
+                rating: goodReview.rating, 
+                review: goodReview.review,
+                reviewer: { _id: critic._id, name: critic.name }
+            },
+            { 
+                _id: badReview._id, 
+                rating: badReview.rating, 
+                review: badReview.review, 
+                reviewer: { _id: critic._id, name: critic.name }
+            }
+        ];
+
+        return request.get(`/films/${incredibles._id}`)
+            .then(({ body }) => {
+                assert.deepEqual(body.reviews, incrdReview);
+            });       
     });
 
     it('deletes film by id', () => {
