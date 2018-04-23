@@ -68,7 +68,7 @@ describe('Actor API', () => {
             });
 
     });
-    it('deletes an actor', () => {
+    it('will not delete an actor in a film', () => {
         let sense = {
             title: 'Sense and Sensibility',
             studio: Types.ObjectId(),
@@ -90,8 +90,18 @@ describe('Actor API', () => {
                 assert.include(response.body.error,  'cannot');
             });
     });
+    it('deletes an actor by id', () => {
+        return request.delete(`/actors/${paul._id}`)
+            .then(() => {
+                return request.get(`/actors/${paul._id}`);
+            })
+            .then(res => {
+                assert.strictEqual(res.status, 404);
+            });
+    });
+
     it('returns 404', () => {
-        return request.get(`/actors/${emma._id}`)
+        return request.get(`/actors/${paul._id}`)
             .then(response => {
                 assert.equal(response.status, 404);
             });
