@@ -2,6 +2,7 @@ const { assert } = require('chai');
 const request = require('./request');
 const { dropCollection } = require('./db');
 const Actor = require('../../lib/models/Actor');
+const { Types } = require('mongoose');
 
 describe('Actor API', () => {
     before(() => dropCollection('actors'));
@@ -68,12 +69,25 @@ describe('Actor API', () => {
 
     });
     it('deletes an actor', () => {
-        return request.delete(`/actors/${emma._id}`)
-            .then(() => {
-                return Actor.findById(emma._id);
+        let sense = {
+            title: 'Sense and Sensibility',
+            studio: Types.ObjectId(),
+            released: 1995,
+            cast: [{
+                part: 'Elinor Dashwood',
+                actor: emma._id
+            }]
+        };
+        return request.post('/films')
+            .send(sense)
+            .then(({ body }) => {
+                sense = body;
+                return request.delete(`/actors/${emma._id}`);
             })
-            .then(found => {
-                assert.isNull(found);
+    
+            .then(response => {
+                assert.strictEqual(response.status, 400);
+                assert.include(response.body.error,  'cannot');
             });
     });
     it('returns 404', () => {
