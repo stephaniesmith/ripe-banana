@@ -1,6 +1,7 @@
 const { assert } = require('chai');
 const request = require('./request');
 const { dropCollection } = require('./db');
+const { Types } = require('mongoose');
 
 describe('Reviewer API', () => {
     before(() => dropCollection('reviewers'));
@@ -9,6 +10,7 @@ describe('Reviewer API', () => {
     
     let coolHandLuke = {
         title: 'Cool Hand Luke',
+        studio: Types.ObjectId(),
         released: 1967,
         cast: []
     };
