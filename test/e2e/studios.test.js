@@ -1,11 +1,10 @@
 const { assert } = require('chai');
 const request = require('./request');
 const { dropCollection } = require('./db');
-const Studio = require('../../lib/models/Studio');
+//const Studio = require('../../lib/models/Studio');
 
 
 describe('Studio API', () => {
-    before(() => dropCollection('studios'));
 
     let paramount = {
         name: 'Paramount Pictures',
@@ -25,17 +24,25 @@ describe('Studio API', () => {
         },
     };
 
-    const roundTrip = doc => JSON.parse(JSON.stringify(doc.toJSON()));
-    const getFields = ({ _id, name }) => ({ _id, name }); 
+    before(() => dropCollection('studios'));
 
+    before(() => {
+        return request.post('/studios')
+            .send(paramount)
+            .then(({ body }) => {
+                paramount = body;
+            });
+    });
+    
     it('saves a studio', () => {
         return request.post('/studios')
             .send(paramount)
             .then(({ body }) => {
                 const { _id, _v
                 } = body;
+                paramount[0]._id = body[0]._id;
                 assert.ok(_id);
-                assert.deepEqual(_v);
+                assert.equal(_v, 0);
                 assert.deepEqual(body, {
                     ...paramount,
                     _id,
@@ -45,27 +52,38 @@ describe('Studio API', () => {
             });
     });
 
+    const getFields = ({ _id, name }) => {
+        return {
+            _id, name
+        };
+    };
+         
+
     it('gets all studios', () => {
-        return Studio.create(paramount).then(roundTrip)
+        return request.get('/studios') /*Studio.create(paramount).then(roundTrip)
             .then(saved => {
-                paramount = saved;
-                return request.get('/studios/');
-            })
-            .then(({ body }) => {
-                assert.deepEqual(body, [paramount, pixar].map(getFields));
-            });
-    });
-    it('gets particular studio by id', () => { return request.get(`/studios/${paramount._id}`)
+        paramount = saved;
+        return request.get('/studios/');
+    })*/
+        .then(({ body }) => {
+            assert.Equal(body, [paramount, pixar].map(getFields));
+        });
+
+    it('gets particular studio by id', () => { return request.get(`/studios/${name._id}`)
         .then(({ body }) => {
             assert.deepEqual(body, paramount);
         });
 
     });
 
-    it('returns 404', () => {
-        return request.get(`/studios/${paramount._id}`)
-            .then(response => {
-                assert.equal(response.status, 404);
-            });
-    });
+    it('deletes studio by id', () => {
+        return request.delete(`/studios/${paramount._id}`)
+            .then(() => {
+                return request.get(`/studios/${paramount._id}`);
+            })
+            .then(res => {
+                assert.equal(res.status, 404);
+            })
+        }
+    )};
 });
