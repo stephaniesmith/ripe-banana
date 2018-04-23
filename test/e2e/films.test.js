@@ -1,7 +1,6 @@
 const { assert } = require('chai');
 const request = require('./request');
 const { dropCollection } = require('./db');
-// const Film = require('../../lib/models/Film');
 
 describe('films API', () => {
 
@@ -29,6 +28,25 @@ describe('films API', () => {
 
     let columbia = {
         name: 'Columbia Pictures'
+    };
+
+    let critic = {
+        name: 'Steven',
+        company: 'steven.com'
+    };
+
+    let goodReview = {
+        rating: 5,
+        review: 'Really good!',
+        createdAt: new Date(),
+        updateAt: new Date()
+    };
+
+    let badReview = {
+        rating: 1,
+        review: 'Really bad!',
+        createdAt: new Date(),
+        updateAt: new Date()
     };
 
 
@@ -65,6 +83,34 @@ describe('films API', () => {
             .send(incredibles)
             .then(({ body }) => {
                 incredibles = body;
+            });
+    });
+
+    before(() => {
+        return request.post('/reviewers')
+            .send(critic)
+            .then(({ body }) => {
+                critic = body;
+            });
+    });
+
+    before(() => {
+        goodReview.reviewer = critic._id;
+        goodReview.film = incredibles._id;
+        return request.post('/reviews')
+            .send(goodReview)
+            .then(({ body }) => {
+                goodReview = body;
+            });
+    });
+
+    before(() => {
+        badReview.reviewer = critic._id;
+        badReview.film = incredibles._id;
+        return request.post('/reviews')
+            .send(badReview)
+            .then(({ body }) => {
+                badReview = body;
             });
     });
 
@@ -105,7 +151,7 @@ describe('films API', () => {
 
     const getOneField = ({ _id, title, studio, released, cast }) => {
         return { 
-            _id, title, studio, released, cast
+            _id, title, studio, released, cast, reviews: []
         };
     };
 
@@ -116,6 +162,30 @@ describe('films API', () => {
                 const selected = getOneField(sense);
                 assert.deepEqual(body, selected);
             });
+    });
+
+    it.only('checks review populate on get film by id', () => {
+        const incrdReview = [
+            { 
+                _id: goodReview._id, 
+                rating: goodReview.rating, 
+                review: goodReview.review,
+                reviewer: { _id: critic._id, name: critic.name }
+            },
+            { 
+                _id: badReview._id, 
+                rating: badReview.rating, 
+                review: badReview.review, 
+                reviewer: { _id: critic._id, name: critic.name }
+            }
+        ];
+
+        return request.get(`/films/${incredibles._id}`)
+            .then(({ body }) => {
+                console.log('REVIEW!!!', incrdReview);
+                console.log('BODY!!!', body.reviews);
+                assert.deepEqual(body.reviews, incrdReview);
+            });       
     });
 
     it.only('deletes film by id', () => {
