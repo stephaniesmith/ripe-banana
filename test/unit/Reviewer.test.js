@@ -2,7 +2,7 @@ const { assert } = require('chai');
 const Reviewer = require('../../lib/models/Reviewer');
 const { getErrors } = require('./helpers');
 
-describe.only('Reviewer model', () => {
+describe('Reviewer model', () => {
 
     const info = {
         name: 'Roger Ebert',
@@ -28,8 +28,6 @@ describe.only('Reviewer model', () => {
     it('is a good, valid model', () => {
         const reviewer = new Reviewer(info);
         reviewer.generateHash(password);
-        console.log('INFO!!!', info);
-        console.log('REV!!!', reviewer);
         info._id = reviewer._id;
         info.hash = reviewer.hash;
         assert.deepEqual(reviewer.toJSON(), info);
