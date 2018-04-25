@@ -3,12 +3,29 @@ const Reviewer = require('../../lib/models/Reviewer');
 const { getErrors } = require('./helpers');
 
 describe('Reviewer model', () => {
-    it('is a good, valid model', () => {
-        const info = {
-            name: 'Roger Ebert',
-            company: 'rogerebert.com'
-        };
 
+    const info = {
+        name: 'Roger Ebert',
+        company: 'rogerebert.com',
+        email: 'rober@ebert.com'
+    };
+
+    const password = 'abc';
+
+    it.only('generates hash from password', () => {
+        const reviewer = new Reviewer(info);
+        reviewer.generateHash(password);
+        assert.ok(reviewer.hash);
+        assert.notEqual(reviewer.hash, password);
+    });
+
+    it.only('compares password to hast', () => {
+        const reviewer = new Reviewer(info);
+        reviewer.generateHash(password);
+        assert.isOk(reviewer.comparePassword(password));
+    });
+
+    it('is a good, valid model', () => {
         const reviewer = new Reviewer(info);
         info._id = reviewer._id;
         assert.deepEqual(reviewer.toJSON(), info);
