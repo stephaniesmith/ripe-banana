@@ -10,7 +10,9 @@ describe('Review API', () => {
     
     let ebert = {
         name: 'Roger Ebert',
-        company: 'rogerebert.com'
+        company: 'rogerebert.com',
+        email: 'rober@rogerebert.com',
+        hash: 'fake hash'
     };
 
     before(() => {
