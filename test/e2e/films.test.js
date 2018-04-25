@@ -32,7 +32,9 @@ describe('films API', () => {
 
     let critic = {
         name: 'Steven',
-        company: 'steven.com'
+        company: 'steven.com',
+        email: 'steven@steven.com',
+        hash: 'fake hash'
     };
 
     let goodReview = {
@@ -170,7 +172,7 @@ describe('films API', () => {
                 _id: goodReview._id, 
                 rating: goodReview.rating, 
                 review: goodReview.review,
-                reviewer: { _id: critic._id, name: critic.name }
+                reviewer: { _id: critic._id, name: critic.name, }
             },
             { 
                 _id: badReview._id, 
