@@ -25,12 +25,16 @@ describe('Reviewer API', () => {
 
     let siskel = {
         name: 'Gene Siskel',
-        company: 'genesiskel.com'
+        company: 'genesiskel.com',
+        email: 'gene@genesiskel.com',
+        hash: 'fake hash'
     };
 
     let ebert = {
         name: 'Roger Ebert',
-        company: 'rogerebert.com'
+        company: 'rogerebert.com',
+        email: 'rober@ebert.com',
+        hash: 'another fake hash'
     };
 
     const checkOk = res => {
@@ -55,6 +59,8 @@ describe('Reviewer API', () => {
             });
     });
 
+    const getFields = ({ _id, name, company }) => ({ _id, name, company });
+
     it('gets all reviewers', () => {
         return request.post('/reviewers')
             .send(ebert)
@@ -64,7 +70,7 @@ describe('Reviewer API', () => {
                 return request.get('/reviewers');
             })
             .then(({ body }) => {
-                assert.deepEqual(body, [siskel, ebert]);
+                assert.deepEqual(body, [siskel, ebert].map(getFields));
             });
     });
 
@@ -83,8 +89,9 @@ describe('Reviewer API', () => {
                 return request.get(`/reviewers/${ebert._id}`);
             })
             .then(({ body }) => {
+                const selected = getFields(ebert);
                 assert.deepEqual(body, {
-                    ...ebert,
+                    ...selected,
                     reviews: [{ 
                         _id: lukeReview._id,
                         rating: lukeReview.rating,
