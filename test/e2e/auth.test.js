@@ -31,7 +31,7 @@ describe.only('Auth API', () => {
                 password: 'abc'
             })
             .then(({ body }) => {
-                assert.ok(body.token, token);
+                assert.ok(body.token);
             });
     });
 });
