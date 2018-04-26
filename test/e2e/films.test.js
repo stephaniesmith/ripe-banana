@@ -34,7 +34,7 @@ describe('films API', () => {
         name: 'Steven',
         company: 'steven.com',
         email: 'steven@steven.com',
-        hash: 'fake hash'
+        password: 'abc'
     };
 
     let goodReview = {
@@ -89,10 +89,13 @@ describe('films API', () => {
     });
 
     before(() => {
-        return request.post('/reviewers')
+        return request.post('/auth/signup')
             .send(critic)
+            .then(() => {
+                return request.get('/reviewers');
+            })
             .then(({ body }) => {
-                critic = body;
+                critic = body[0];
             });
     });
 
