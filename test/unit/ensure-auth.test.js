@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 const tokenService = require('../../lib/util/token-service');
-const ensureAuth = require('../../lib/util/ensure-auth');
+const createEnsureAuth = require('../../lib/util/ensure-auth');
 
 describe('ensure auth middleware', () => {
 
@@ -12,14 +12,15 @@ describe('ensure auth middleware', () => {
 
     it('adds payload as req.reviewer on success', done => {
         const req = {
-            get() {
-
+            get(header) {
+                if(header === 'Authorization') return token;
             }
         };
         const next = () => {
             assert.equal(req.reviewer.id, reviewer._id);
             done();
         };
+        ensureAuth(req, null, next);
     });
 
 });
