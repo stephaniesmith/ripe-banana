@@ -3,7 +3,7 @@ const request = require('./request');
 const { dropCollection } = require('./db');
 const { Types } = require('mongoose');
 
-describe('Reviewer API', () => {
+describe.only('Reviewer API', () => {
     before(() => dropCollection('reviewers'));
     before(() => dropCollection('reviews'));
     before(() => dropCollection('films'));
@@ -27,14 +27,14 @@ describe('Reviewer API', () => {
         name: 'Gene Siskel',
         company: 'genesiskel.com',
         email: 'gene@genesiskel.com',
-        hash: 'fake hash'
+        password: 'abc'
     };
 
     let ebert = {
         name: 'Roger Ebert',
         company: 'rogerebert.com',
         email: 'rober@ebert.com',
-        hash: 'another fake hash'
+        password: '123'
     };
 
     const checkOk = res => {
@@ -42,35 +42,29 @@ describe('Reviewer API', () => {
         return res;
     };
 
-    it('saves a reviewer', () => {
-        return request.post('/reviewers')
-            .send(siskel)
-            .then(checkOk)
-            .then(({ body }) => {
-                const { _id, __v } = body;
-                assert.ok(_id);
-                assert.strictEqual(__v, 0);
-                assert.deepEqual(body, {
-                    ...siskel,
-                    _id,
-                    __v
-                });
-                siskel = body;
-            });
+    before(() => {
+        return request.post('/auth/signup')
+            .send(siskel);
     });
 
-    const getFields = ({ _id, name, company }) => ({ _id, name, company });
+    const getFields = ({ name, company }) => ({ name, company });
 
     it('gets all reviewers', () => {
-        return request.post('/reviewers')
+        return request.post('/auth/signup')
             .send(ebert)
             .then(checkOk)
-            .then(({ body }) => {
-                ebert = body;
+            .then(() => {
+                // ebert = body;
                 return request.get('/reviewers');
             })
             .then(({ body }) => {
-                assert.deepEqual(body, [siskel, ebert].map(getFields));
+                siskel._id = body[0]._id;
+                assert.ok(body[0]._id);
+                assert.ok(body[1]._id);
+                assert.deepEqual(body.map(getFields), [siskel, ebert].map(getFields));
+
+                siskel = body[0];
+                ebert = body[1];
             });
     });
 
@@ -102,18 +96,6 @@ describe('Reviewer API', () => {
                         }
                     }]
                 });
-            });
-    });
-
-    
-    it('updates a reviewer', () => {
-        siskel.company = 'Chicago Tribune';
-
-        return request.put(`/reviewers/${siskel._id}`)
-            .send(siskel)
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body, siskel);
             });
     });
 });
