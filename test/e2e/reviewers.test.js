@@ -3,7 +3,7 @@ const request = require('./request');
 const { dropCollection } = require('./db');
 const { Types } = require('mongoose');
 
-describe.only('Reviewer API', () => {
+describe('Reviewer API', () => {
     before(() => dropCollection('reviewers'));
     before(() => dropCollection('reviews'));
     before(() => dropCollection('films'));
@@ -47,7 +47,7 @@ describe.only('Reviewer API', () => {
             .send(siskel);
     });
 
-    const getFields = ({ name, company }) => ({ name, company });
+    const getFields = ({ _id, name, company }) => ({ _id, name, company });
 
     it('gets all reviewers', () => {
         return request.post('/auth/signup')
@@ -59,12 +59,10 @@ describe.only('Reviewer API', () => {
             })
             .then(({ body }) => {
                 siskel._id = body[0]._id;
+                ebert._id = body[1]._id;
                 assert.ok(body[0]._id);
                 assert.ok(body[1]._id);
                 assert.deepEqual(body.map(getFields), [siskel, ebert].map(getFields));
-
-                siskel = body[0];
-                ebert = body[1];
             });
     });
 
