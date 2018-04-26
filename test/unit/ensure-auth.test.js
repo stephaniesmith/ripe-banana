@@ -1,6 +1,6 @@
 const { assert } = require('chai');
-const tokenService = require('../../lib/util/token-service');
 const createEnsureAuth = require('../../lib/util/ensure-auth');
+const tokenService = require('../../lib/util/token-service');
 
 describe('ensure auth middleware', () => {
 
@@ -21,6 +21,17 @@ describe('ensure auth middleware', () => {
             done();
         };
         ensureAuth(req, null, next);
+    });
+
+    it('calls next with error when token is bad', done => {
+        const req = {
+            get() { return 'bad-token' }
+        };
+        const next = err => {
+            assert.equal(err.status, 401);
+            done();
+        };
+        ensureAuth(req, null, next); 
     });
 
 });
