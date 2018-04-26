@@ -12,14 +12,17 @@ describe('Review API', () => {
         name: 'Roger Ebert',
         company: 'rogerebert.com',
         email: 'rober@rogerebert.com',
-        hash: 'fake hash'
+        password: 'abc'
     };
 
     before(() => {
-        return request.post('/reviewers')
+        return request.post('/auth/signup')
             .send(ebert)
+            .then(() => {
+                return request.get('/reviewers');
+            })
             .then(({ body }) => {
-                ebert = body;
+                ebert = body[0];
             });
     });
 
