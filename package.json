@@ -16,19 +16,23 @@
     "test:e2e": "mocha test/e2e",
     "test:watch": "nodemon --exec 'npm run test:mocha'",
     "test:e2e:watch": "nodemon --exec 'npm run test:e2e'",
-    "test:unit:watch": "nodemon --exec 'npm run test:unit'"
+    "test:unit:watch": "nodemon --exec 'npm run test:unit'",
+    "start": "node server.js",
+    "start:watch": "nodemon server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stephaniesmith/ripe-banana.git"
   },
-  "author": "",
+  "author": "Katlyn",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/stephaniesmith/ripe-banana/issues"
   },
   "homepage": "https://github.com/stephaniesmith/ripe-banana#readme",
   "dependencies": {
+    "bcryptjs": "2.4.3",
+    "jsonwebtoken": "^8.2.1",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "mongodb": "^3.0.7",
