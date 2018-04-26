@@ -31,10 +31,11 @@
   },
   "homepage": "https://github.com/stephaniesmith/ripe-banana#readme",
   "dependencies": {
+    "bcrypt": "^2.0.1",
     "bcryptjs": "2.4.3",
-    "jsonwebtoken": "^8.2.1",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.1",
     "mongodb": "^3.0.7",
     "mongoose": "^5.0.15",
     "morgan": "^1.9.0",
