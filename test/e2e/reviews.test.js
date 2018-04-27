@@ -3,7 +3,7 @@ const request = require('./request');
 const { dropCollection } = require('./db');
 const { Types } = require('mongoose');
 
-describe.only('Review API', () => {
+describe('Review API', () => {
     before(() => dropCollection('reviews'));
     before(() => dropCollection('reviewers'));
     before(() => dropCollection('films'));
@@ -22,7 +22,6 @@ describe.only('Review API', () => {
             .send(ebert)
             .then(({ body }) => {
                 token = body.token;
-                console.log(token);
                 return request.get('/reviewers');
             })
             .then(({ body }) => {

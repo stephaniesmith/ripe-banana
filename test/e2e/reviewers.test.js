@@ -7,6 +7,8 @@ describe('Reviewer API', () => {
     before(() => dropCollection('reviewers'));
     before(() => dropCollection('reviews'));
     before(() => dropCollection('films'));
+
+    let token = '';
     
     let coolHandLuke = {
         title: 'Cool Hand Luke',
@@ -44,7 +46,10 @@ describe('Reviewer API', () => {
 
     before(() => {
         return request.post('/auth/signup')
-            .send(siskel);
+            .send(siskel)
+            .then(({ body }) => {
+                token = body.token;
+            });
     });
 
     const getFields = ({ _id, name, company }) => ({ _id, name, company });
@@ -54,7 +59,6 @@ describe('Reviewer API', () => {
             .send(ebert)
             .then(checkOk)
             .then(() => {
-                // ebert = body;
                 return request.get('/reviewers');
             })
             .then(({ body }) => {
@@ -75,6 +79,7 @@ describe('Reviewer API', () => {
         };
     
         return request.post('/reviews')
+            .set('Authorization', token)
             .send(lukeReview)
             .then(({ body }) => {
                 lukeReview = body;
