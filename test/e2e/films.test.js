@@ -4,6 +4,8 @@ const { dropCollection } = require('./db');
 
 describe('films API', () => {
 
+    let token = '';
+
     let emma = {
         name: 'Emma Thompson',
         dob: new Date(1959, 3, 15).toJSON(),
@@ -91,7 +93,8 @@ describe('films API', () => {
     before(() => {
         return request.post('/auth/signup')
             .send(critic)
-            .then(() => {
+            .then(({ body }) => {
+                token = body.token;
                 return request.get('/reviewers');
             })
             .then(({ body }) => {
@@ -103,6 +106,7 @@ describe('films API', () => {
         goodReview.reviewer = critic._id;
         goodReview.film = incredibles._id;
         return request.post('/reviews')
+            .set('Authorization', token)
             .send(goodReview)
             .then(({ body }) => {
                 goodReview = body;
@@ -113,6 +117,7 @@ describe('films API', () => {
         badReview.reviewer = critic._id;
         badReview.film = incredibles._id;
         return request.post('/reviews')
+            .set('Authorization', token)
             .send(badReview)
             .then(({ body }) => {
                 badReview = body;
