@@ -57,6 +57,17 @@ describe('films API', () => {
 
     before(() => dropCollection('actors'));
     before(() => dropCollection('films'));
+    before(() => dropCollection('reviewers'));
+
+    before(() => {
+        return request.post('/auth/signup')
+            .send(critic)
+            .then(({ body }) => {
+                token = body.token;
+                critic._id = body._id;
+                return request.get('/reviewers');
+            });
+    });
 
     before(() => {
         return request.post('/actors')
@@ -88,19 +99,10 @@ describe('films API', () => {
     before(() => {
         incredibles.studio = pixar._id;
         return request.post('/films')
+            .set('Authorization', critic.roles)
             .send(incredibles)
             .then(({ body }) => {
                 incredibles = body;
-            });
-    });
-
-    before(() => {
-        return request.post('/auth/signup')
-            .send(critic)
-            .then(({ body }) => {
-                token = body.token;
-                critic._id = body._id;
-                return request.get('/reviewers');
             });
     });
 
