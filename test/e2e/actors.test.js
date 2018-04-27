@@ -6,6 +6,15 @@ const { Types } = require('mongoose');
 
 describe('Actor API', () => {
     before(() => dropCollection('actors'));
+    before(() => dropCollection('reviewers'));
+
+    let siskel = {
+        name: 'Gene Siskel',
+        company: 'genesiskel.com',
+        email: 'gene@genesiskel.com',
+        password: 'abc',
+        roles: 'admin'
+    };
 
     let emma = {
         name: 'Emma Thompson',
@@ -19,11 +28,21 @@ describe('Actor API', () => {
         pob: 'Shaker Heights, OH, USA'
     };
 
+    before(() => {
+        return request.post('/auth/signup')
+            .send(siskel)
+            .then(({ body }) => {
+                siskel._id = body._id;
+                siskel.roles = body.roles;
+            });
+    });
+
     const roundTrip = doc => JSON.parse(JSON.stringify(doc.toJSON()));
     const getFields = ({ _id, name }) => ({ _id, name });
 
     it('saves an actor', () => {
         return request.post('/actors')
+            .set('Authorization', siskel.roles)
             .send(emma)
             .then(({ body }) => {
                 const { _id, __v
@@ -84,6 +103,7 @@ describe('Actor API', () => {
         emma.pob = 'Paddington, London, England';
 
         return request.put(`/actors/${emma._id}`)
+            .set('Authorization', siskel.roles)
             .send(emma)
             .then(({ body }) => {
                 assert.deepEqual(body, emma);
@@ -93,7 +113,7 @@ describe('Actor API', () => {
     it('will not delete an actor in a film', () => {
         
         return request.delete(`/actors/${emma._id}`)
-    
+            .set('Authorization', siskel.roles)
             .then(response => {
                 assert.strictEqual(response.status, 400);
                 assert.include(response.body.error,  'cannot');
@@ -101,6 +121,7 @@ describe('Actor API', () => {
     });
     it('deletes an actor by id', () => {
         return request.delete(`/actors/${paul._id}`)
+            .set('Authorization', siskel.roles)
             .then(() => {
                 return request.get(`/actors/${paul._id}`);
             })
