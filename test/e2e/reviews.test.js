@@ -3,10 +3,12 @@ const request = require('./request');
 const { dropCollection } = require('./db');
 const { Types } = require('mongoose');
 
-describe('Review API', () => {
+describe.only('Review API', () => {
     before(() => dropCollection('reviews'));
     before(() => dropCollection('reviewers'));
     before(() => dropCollection('films'));
+
+    let token = '';
     
     let ebert = {
         name: 'Roger Ebert',
@@ -18,7 +20,9 @@ describe('Review API', () => {
     before(() => {
         return request.post('/auth/signup')
             .send(ebert)
-            .then(() => {
+            .then(({ body }) => {
+                token = body.token;
+                console.log(token);
                 return request.get('/reviewers');
             })
             .then(({ body }) => {
@@ -55,6 +59,7 @@ describe('Review API', () => {
         lukeReview.reviewer = ebert._id;
         lukeReview.film = coolHandLuke._id;
         return request.post('/reviews')
+            .set('Authorization', token)
             .send(lukeReview)
             .then(checkOk)
             .then(({ body }) => {
