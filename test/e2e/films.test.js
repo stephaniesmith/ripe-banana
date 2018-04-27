@@ -102,9 +102,6 @@ describe('films API', () => {
                 critic._id = body._id;
                 return request.get('/reviewers');
             });
-            // .then(({ body }) => {
-            //     critic = body[0];
-            // });
     });
 
     before(() => {
@@ -134,6 +131,7 @@ describe('films API', () => {
         sense.cast = [{ part: 'Elinor Dashwood', actor: emma._id }];
         sense.studio = columbia._id;
         return request.post('/films')
+            .set('Authorization', critic.roles)
             .send(sense)
             .then(({ body }) => {
                 const { _id, __v } = body;
@@ -203,6 +201,7 @@ describe('films API', () => {
 
     it('deletes film by id', () => {
         return request.delete(`/films/${incredibles._id}`)
+            .set('Authorization', critic.roles)
             .then(() => {
                 return request.get(`/films/${incredibles._id}`);
             })

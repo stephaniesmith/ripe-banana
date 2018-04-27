@@ -14,7 +14,8 @@ describe('Review API', () => {
         name: 'Roger Ebert',
         company: 'rogerebert.com',
         email: 'rober@rogerebert.com',
-        password: 'abc'
+        password: 'abc',
+        roles: 'admin'
     };
 
     before(() => {
@@ -22,10 +23,7 @@ describe('Review API', () => {
             .send(ebert)
             .then(({ body }) => {
                 token = body.token;
-                return request.get('/reviewers');
-            })
-            .then(({ body }) => {
-                ebert = body[0];
+                ebert._id = body._id;
             });
     });
 
@@ -38,6 +36,7 @@ describe('Review API', () => {
 
     before(() => {
         return request.post('/films')
+            .set('Authorization', ebert.roles)
             .send(coolHandLuke)
             .then(({ body }) => {
                 coolHandLuke = body;

@@ -82,6 +82,7 @@ describe('Actor API', () => {
             }]
         };
         return request.post('/films')
+            .set('Authorization', siskel.roles)
             .send(sense)
             .then(({ body }) => {
                 sense = body;

@@ -84,6 +84,7 @@ describe('Studio API', () => {
         };
         
         return request.post('/films')
+            .set('Authorization', siskel.roles)
             .send(up)
             .then(({ body }) => {
                 up = body;

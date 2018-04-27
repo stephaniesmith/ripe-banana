@@ -17,19 +17,12 @@ describe('Reviewer API', () => {
         cast: []
     };
 
-    before(() => {
-        return request.post('/films')
-            .send(coolHandLuke)
-            .then(({ body }) => {
-                coolHandLuke = body;
-            });
-    });
-
     let siskel = {
         name: 'Gene Siskel',
         company: 'genesiskel.com',
         email: 'gene@genesiskel.com',
-        password: 'abc'
+        password: 'abc',
+        roles: 'admin'
     };
 
     let ebert = {
@@ -49,6 +42,16 @@ describe('Reviewer API', () => {
             .send(siskel)
             .then(({ body }) => {
                 token = body.token;
+                siskel._id = body._id;
+            });
+    });
+
+    before(() => {
+        return request.post('/films')
+            .set('Authorization', siskel.roles)
+            .send(coolHandLuke)
+            .then(({ body }) => {
+                coolHandLuke = body;
             });
     });
 
