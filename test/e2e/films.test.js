@@ -60,6 +60,7 @@ describe('films API', () => {
 
     before(() => {
         return request.post('/actors')
+            .set('Authorization', critic.roles)
             .send(emma)
             .then(({ body }) => {
                 emma = body;
