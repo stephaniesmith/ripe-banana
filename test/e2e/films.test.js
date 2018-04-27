@@ -36,7 +36,8 @@ describe('films API', () => {
         name: 'Steven',
         company: 'steven.com',
         email: 'steven@steven.com',
-        password: 'abc'
+        password: 'abc',
+        roles: 'admin'
     };
 
     let goodReview = {
@@ -68,6 +69,7 @@ describe('films API', () => {
     before(() => {
         return request.post('/studios')
             .send(pixar)
+            .set('Authorization', critic.roles)
             .then(({ body }) => {
                 pixar = body;
             });
@@ -76,6 +78,7 @@ describe('films API', () => {
     before(() => {
         return request.post('/studios')
             .send(columbia)
+            .set('Authorization', critic.roles)
             .then(({ body }) => {
                 columbia = body;
             });
@@ -95,11 +98,12 @@ describe('films API', () => {
             .send(critic)
             .then(({ body }) => {
                 token = body.token;
+                critic._id = body._id;
                 return request.get('/reviewers');
-            })
-            .then(({ body }) => {
-                critic = body[0];
             });
+            // .then(({ body }) => {
+            //     critic = body[0];
+            // });
     });
 
     before(() => {
